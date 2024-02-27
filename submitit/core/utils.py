@@ -75,19 +75,19 @@ class JobPaths:
 
     @property
     def stderr(self) -> Path:
-        return self._format_id(self.folder / "slurm-%j_%t_log.err")
+        return self._format_id(self.folder / "slurm-%j_%t.err")
     
     @property
     def stderr_combined(self) -> Path:
-        return self._format_id(self.folder / "slurm-%j_log.err")
+        return self._format_id(self.folder / "slurm-%j.err")
 
     @property
     def stdout(self) -> Path:
-        return self._format_id(self.folder / "slurm-%j_%t_log.log")
+        return self._format_id(self.folder / "slurm-%j_%t.log")
     
     @property
     def stdout_combined(self) -> Path:
-        return self._format_id(self.folder / "slurm-%j_log.log")
+        return self._format_id(self.folder / "slurm-%j.log")
 
     def _format_id(self, path: tp.Union[Path, str]) -> Path:
         """Replace id tag by actual id if available"""
