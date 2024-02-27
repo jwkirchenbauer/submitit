@@ -417,6 +417,8 @@ def _make_sbatch_string(
     array_parallelism: int = 256,
     wckey: str = "submitit",
     stderr_to_stdout: bool = False,
+    combine_task_stdouts: bool = True,
+    combine_task_stderrs: bool = True,
     map_count: tp.Optional[int] = None,  # used internally
     additional_parameters: tp.Optional[tp.Dict[str, tp.Any]] = None,
     srun_args: tp.Optional[tp.Iterable[str]] = None,
@@ -462,6 +464,8 @@ def _make_sbatch_string(
         "setup",
         "signal_delay_s",
         "stderr_to_stdout",
+        "combine_task_stdouts",
+        "combine_task_stderrs",
         "srun_args",
         "use_srun",  # if False, un python directly in sbatch instead of through srun
     ]
@@ -477,8 +481,14 @@ def _make_sbatch_string(
         warnings.warn('"cpus_per_gpu" requires to set "gpus_per_task" to work (and not "gpus_per_node")')
     # add necessary parameters
     paths = utils.JobPaths(folder=folder)
-    stdout = str(paths.stdout)
-    stderr = str(paths.stderr)
+    if combine_task_stdouts:
+        stdout = str(paths.stdout_combined)
+    else:
+        stdout = str(paths.stdout)
+    if combine_task_stderrs:
+        stderr = str(paths.stderr_combined)
+    else:
+        stderr = str(paths.stderr)
     # Job arrays will write files in the form  <ARRAY_ID>_<ARRAY_TASK_ID>_<TASK_ID>
     if map_count is not None:
         assert isinstance(map_count, int) and map_count
